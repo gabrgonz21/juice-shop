@@ -2,17 +2,17 @@ trigger:
   - main
 
 pool:
-  vmImage: ubuntu-latest
+  name: LocalAgent
 
 steps:
-  - script: |
-      curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-      unzip sonar-scanner.zip
-      export PATH=$PATH:$(pwd)/sonar-scanner-5.0.1.3006-linux/bin
-      sonar-scanner \
-        -Dsonar.projectKey=gabrgonz21_juice-shop \
-        -Dsonar.organization=gabrgonz21 \
-        -Dsonar.sources=. \
-        -Dsonar.host.url=https://sonarcloud.io \
+  - powershell: |
+      Invoke-WebRequest -Uri "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-windows.zip" -OutFile "sonar-scanner.zip"
+      Expand-Archive -Path "sonar-scanner.zip" -DestinationPath "."
+      $env:PATH += ";$(pwd)\sonar-scanner-5.0.1.3006-windows\bin"
+      sonar-scanner `
+        -Dsonar.projectKey=gabrgonz21_juice-shop `
+        -Dsonar.organization=gabrgonz21 `
+        -Dsonar.sources=. `
+        -Dsonar.host.url=https://sonarcloud.io `
         -Dsonar.token=$(SONAR_TOKEN)
     displayName: 'Run SonarCloud Scan'
