@@ -5,18 +5,14 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-  - task: SonarCloudPrepare@2
-    inputs:
-      SonarCloud: 'SonarCloud'
-      organization: 'gabrgonz21'
-      scannerMode: 'CLI'
-      configMode: 'manual'
-      cliProjectKey: 'gabrgonz21_juice-shop'
-      cliProjectName: 'juice-shop'
-      cliSources: '.'
-
-  - task: SonarCloudAnalyze@2
-
-  - task: SonarCloudPublish@2
-    inputs:
-      pollingTimeoutSec: '300'
+  - script: |
+      curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+      unzip sonar-scanner.zip
+      export PATH=$PATH:$(pwd)/sonar-scanner-5.0.1.3006-linux/bin
+      sonar-scanner \
+        -Dsonar.projectKey=gabrgonz21_juice-shop \
+        -Dsonar.organization=gabrgonz21 \
+        -Dsonar.sources=. \
+        -Dsonar.host.url=https://sonarcloud.io \
+        -Dsonar.token=$(SONAR_TOKEN)
+    displayName: 'Run SonarCloud Scan'
