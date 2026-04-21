@@ -1,0 +1,22 @@
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: SonarCloudPrepare@2
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: 'gabrgonz21'
+      scannerMode: 'CLI'
+      configMode: 'manual'
+      cliProjectKey: 'gabrgonz21_juice-shop'
+      cliProjectName: 'juice-shop'
+      cliSources: '.'
+
+  - task: SonarCloudAnalyze@2
+
+  - task: SonarCloudPublish@2
+    inputs:
+      pollingTimeoutSec: '300'
